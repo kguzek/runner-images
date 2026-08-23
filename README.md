@@ -4,7 +4,7 @@ This is a set of OCI images for use by Forgejo Actions runners on my [personal G
 
 ## Images
 
-1. [node-debian](./node-debian/Containerfile): a generic runner image labelled as `ubuntu-latest`. Built to balance compatibility with GitHub Actions' `ubuntu-latest` against low image size. Based on Debian and comes with Node.js to support actions like [actions/checkout](https://git.guzek.uk/actions/checkout) which rely on it.
+1. [ubuntu-latest](./images/ubuntu-latest/Containerfile): a generic all-round runner image suited for most CI tasks. Built to balance compatibility with GitHub Actions' `ubuntu-latest` against low image size. Read more details in the container's [README file](./images/ubuntu-latest/README.md).
 
 ## Copyright
 
