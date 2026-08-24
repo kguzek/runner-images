@@ -1,35 +1,41 @@
 # this SHA corresponds to tags: 26.04, resolute, latest
 FROM docker://docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b as base
 
+ARG REGISTRY_HOSTNAME
+ARG PROJECT_NAME
+ARG REPOSITORY_NAME
+ARG GIT_HOSTNAME
+ARG GIT_OWNER
 ARG IMAGE_CREATED
 ARG IMAGE_VERSION
 ARG IMAGE_REVISION
 
-LABEL org.opencontainers.image.created="${IMAGE_CREATED}" \
-      org.opencontainers.image.authors="Konrad Guzek" \
-      org.opencontainers.image.url="https://registry.guzek.uk/harbor/projects/5/repositories/node-debian" \
-      org.opencontainers.image.documentation="https://git.guzek.uk/kguzek/runner-images/src/branch/main/README.md" \
-      org.opencontainers.image.source="https://github.com/kguzek/runner-images" \
-      org.opencontainers.image.version="${IMAGE_VERSION}" \
-      org.opencontainers.image.revision="${IMAGE_REVISION}" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.title="A generic runner OCI image for use by Forgejo Actions" \
-      org.opencontainers.image.description="Built to balance compatibility with GitHub Actions' `ubuntu-latest` against low image size."
+LABEL org.opencontainers.image.created="${IMAGE_CREATED}"
+LABEL org.opencontainers.image.authors="Konrad Guzek"
+LABEL org.opencontainers.image.url="https://${REGISTRY_HOSTNAME}/harbor/projects/5/repositories/${REPOSITORY_NAME}"
+LABEL org.opencontainers.image.documentation="https://${GIT_HOSTNAME}/${GIT_OWNER}/${PROJECT_NAME}/src/branch/main/README.md"
+LABEL org.opencontainers.image.source="https://${GIT_HOSTNAME}/${GIT_OWNER}/${PROJECT_NAME}"
+LABEL org.opencontainers.image.version="${IMAGE_VERSION}"
+LABEL org.opencontainers.image.revision="${IMAGE_REVISION}"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.title="A generic runner OCI image for use by Forgejo Actions"
+LABEL org.opencontainers.image.description="Built to balance compatibility with GitHub Actions' `ubuntu-latest` against low image size."
 
 # `gettext-base` is used for `envsubst`: https://git.guzek.uk/kguzek/liveseries-server/actions/runs/3/jobs/0/attempt/1
 RUN apt-get update && apt-get install --yes \
   gettext-base \
   ca-certificates \
   curl \
-  podman \
-  nodejs \
-  npm
+  jq \
+  git
+RUN apt-get install --yes nodejs
+# RUN apt-get install --yes npm
 
 # setup Docker apt repository: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 RUN install -m 0755 -d /etc/apt/keyrings && \
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && \
   chmod a+r /etc/apt/keyrings/docker.asc && \
-  cat > /etc/apt/sources.list.d/docker.sources <<EOF
+  cat > /etc/apt/sources.list.d/docker.sources <<EOF && apt-get update
 Types: deb
 URIs: https://download.docker.com/linux/ubuntu
 Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
@@ -39,5 +45,9 @@ Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
 # install docker packages
-RUN apt-get update && \
-  apt-get install --yes docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+RUN apt-get install --yes --no-install-recommends docker-ce
+RUN apt-get install --yes \
+  docker-ce-cli \
+  containerd.io \
+  docker-buildx-plugin \
+  docker-compose-plugin
