@@ -9,25 +9,22 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    env:
-      REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
-      PROJECT_NAME: ${{ vars.PROJECT_NAME }}
-      GIT_HOSTNAME: ${{ vars.GIT_HOSTNAME }}
-      GIT_OWNER: ${{ vars.GIT_OWNER }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Install dependencies
-        run: |
-          apt-get update && apt-get install -y \
-            shellcheck \
-            skopeo
+      - name: Install ShellCheck
+        run: apt-get update && apt-get install -y shellcheck
 
-      - name: Lint shell scripts
+      - name: Check shell scripts
         run: shellcheck scripts/*.sh
 
       - name: Build images
+        env:
+          REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
+          PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+          GIT_HOSTNAME: ${{ vars.GIT_HOSTNAME }}
+          GIT_OWNER: ${{ vars.GIT_OWNER }}
         run: ./scripts/build.sh
         if: always()

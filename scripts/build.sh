@@ -9,7 +9,7 @@ set -eu
   "${CONTAINER_BACKEND:=docker}"
 
 export REGISTRY_HOSTNAME PROJECT_NAME
-FIRST_ARGUMENT="$1"
+FIRST_ARGUMENT="${1:-}"
 
 should_push() {
   [ "$FIRST_ARGUMENT" = '--push' ]
