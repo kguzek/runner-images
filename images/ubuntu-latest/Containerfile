@@ -1,5 +1,5 @@
 # this SHA corresponds to tags: 26.04, resolute, latest
-FROM docker://docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b as base
+FROM docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
 
 ARG REGISTRY_HOSTNAME
 ARG PROJECT_NAME

@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
+      PROJECT_NAME: ${{ vars.PROJECT_NAME }}
+      GIT_HOSTNAME: ${{ vars.GIT_HOSTNAME }}
+      GIT_OWNER: ${{ vars.GIT_OWNER }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install dependencies
+        run: |
+          apt-get update && apt-get install -y \
+            shellcheck \
+            skopeo
+
+      - name: Lint shell scripts
+        run: shellcheck scripts/*.sh
+
+      - name: Build images
+        run: ./scripts/build.sh
+        if: always()
