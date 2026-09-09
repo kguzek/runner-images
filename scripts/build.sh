@@ -47,7 +47,7 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
     continue
   fi
 
-  for TAG in "$TAG_REGISTRY_LATEST" "$TAG_REGISTRY_VERSIONED" "$TAG_GIT_LATEST" "$TAG_GIT_VERSIONED"; do
+  for TAG in "$TAG_REGISTRY_VERSIONED" "$TAG_REGISTRY_LATEST" "$TAG_GIT_VERSIONED" "$TAG_GIT_LATEST"; do
     "$CONTAINER_BACKEND" push "$TAG"
   done
   cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST"
