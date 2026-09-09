@@ -22,12 +22,24 @@ jobs:
           username: ${{ secrets.HARBOR_USERNAME }}
           password: ${{ secrets.HARBOR_PASSWORD }}
 
+      - name: Create Forgejo JWT
+        id: jwt
+        run: |
+          jwt=$( \
+            curl --fail \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=${{ vars.OIDC_AUDIENCE }}" \
+            | jq -r ".value" \
+          )
+          echo "::add-mask::$jwt"
+          echo "jwt=$jwt" >> $FORGEJO_OUTPUT
+
       - name: Login to Forgejo
         uses: docker/login-action@v4
         with:
           registry: ${{ vars.GIT_HOSTNAME }}
           username: ${{ forgejo.actor }}
-          password: ${{ forgejo.token }}
+          password: ${{ steps.jwt.outputs.jwt }}
 
       - name: Install cosign
         uses: https://github.com/sigstore/cosign-installer@v4.1.2
