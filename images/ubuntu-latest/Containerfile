@@ -9,6 +9,7 @@ ARG GIT_OWNER
 ARG IMAGE_CREATED
 ARG IMAGE_VERSION
 ARG IMAGE_REVISION
+ARG DEBIAN_FRONTEND=noninteractive
 
 LABEL org.opencontainers.image.created="${IMAGE_CREATED}"
 LABEL org.opencontainers.image.authors="Konrad Guzek"
@@ -23,11 +24,15 @@ LABEL org.opencontainers.image.description="Built to balance compatibility with 
 
 # `gettext-base` is used for `envsubst`: https://git.guzek.uk/kguzek/liveseries-server/actions/runs/3/jobs/0/attempt/1
 RUN apt-get update && apt-get install --yes \
-  gettext-base \
   ca-certificates \
   curl \
+  wget \
+  zip \
+  unzip \
+  tar \
   jq \
-  git
+  git \
+  gettext-base
 RUN apt-get install --yes nodejs
 # RUN apt-get install --yes npm
 
@@ -50,4 +55,5 @@ RUN apt-get install --yes \
   docker-ce-cli \
   containerd.io \
   docker-buildx-plugin \
-  docker-compose-plugin
+  docker-compose-plugin \
+  skopeo

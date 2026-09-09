@@ -8,15 +8,19 @@ keeping the image size low.
 
 - Ubuntu 26.04 (`resolute`)
 - CA certificates
-- curl
+- Git
+- Node.js
 - Docker Engine (`docker-ce`)
 - Docker Buildx plugin
 - Docker Compose plugin
+- curl
+- wget
+- zip
+- unzip
+- tar
+- jq
 - containerd
 - gettext-base (`envsubst`)
-- Git
-- jq
-- Node.js
 
 ## Trivia
 
