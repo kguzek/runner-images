@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 : "${REGISTRY_HOSTNAME:?}" \
   "${PROJECT_NAME:?}"      \
   "${REPOSITORY_NAME:?}"
@@ -10,7 +12,7 @@ IMAGE_REVISION=$(git rev-parse HEAD)
 
 LATEST_MATCHING_VERSION=$(
   skopeo list-tags "docker://$REGISTRY_HOSTNAME/$PROJECT_NAME/$REPOSITORY_NAME" | \
-  jq -r ".Tags[] | select(startswith(\"$IMAGE_VERSION\"))"                     | \
+  jq -r ".Tags[] | select(startswith(\"$IMAGE_VERSION\"))"                      | \
   sort --numeric-sort --reverse                                                 | \
   head --lines 1
 )

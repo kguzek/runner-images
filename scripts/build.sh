@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -eu
 
 : "${REGISTRY_HOSTNAME:?}" \
   "${PROJECT_NAME:?}"      \
@@ -50,5 +50,5 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
   for TAG in "$TAG_REGISTRY_LATEST" "$TAG_REGISTRY_VERSIONED" "$TAG_GIT_LATEST" "$TAG_GIT_VERSIONED"; do
     "$CONTAINER_BACKEND" push "$TAG"
   done
-  cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REPOSITORY_LATEST"
+  cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST"
 done
