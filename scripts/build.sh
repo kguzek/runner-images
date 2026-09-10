@@ -15,6 +15,10 @@ should_push() {
   [ "$FIRST_ARGUMENT" = '--push' ]
 }
 
+should_sign() {
+  [ "$FIRST_ARGUMENT" = '--sign' ]
+}
+
 for CONTAINERFILE_PATH in ./images/*/Containerfile; do
   REPOSITORY_PATH="${CONTAINERFILE_PATH%/Containerfile}"
   export REPOSITORY_NAME="${REPOSITORY_PATH#./images/}"
@@ -27,6 +31,12 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
   TAG_REGISTRY_VERSIONED="$TAG_REGISTRY:$IMAGE_VERSION"
   TAG_GIT_LATEST="$TAG_GIT:latest"
   TAG_GIT_VERSIONED="$TAG_GIT:$IMAGE_VERSION"
+
+  if should_sign; then
+    IMAGE_DIGEST="$(skopeo inspect "docker:$TAG_REGISTRY_LATEST" | jq -r .Digest)"
+    cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST@$IMAGE_DIGEST"
+    continue
+  fi
 
   "$CONTAINER_BACKEND" build "$REPOSITORY_PATH"        \
     --file "$CONTAINERFILE_PATH"                       \
@@ -50,6 +60,4 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
   for TAG in "$TAG_REGISTRY_VERSIONED" "$TAG_REGISTRY_LATEST" "$TAG_GIT_VERSIONED" "$TAG_GIT_LATEST"; do
     "$CONTAINER_BACKEND" push "$TAG"
   done
-  IMAGE_DIGEST="$(skopeo inspect "containers-storage:$TAG_REGISTRY_LATEST" | jq -r .Digest)"
-  cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST@$IMAGE_DIGEST"
 done

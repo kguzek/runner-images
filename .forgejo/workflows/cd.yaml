@@ -41,9 +41,6 @@ jobs:
           username: ${{ forgejo.actor }}
           password: ${{ steps.jwt.outputs.jwt }}
 
-      - name: Install cosign
-        uses: https://github.com/sigstore/cosign-installer@v4.1.2
-
       - name: Build & push images
         env:
           REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
