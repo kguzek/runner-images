@@ -50,5 +50,6 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
   for TAG in "$TAG_REGISTRY_VERSIONED" "$TAG_REGISTRY_LATEST" "$TAG_GIT_VERSIONED" "$TAG_GIT_LATEST"; do
     "$CONTAINER_BACKEND" push "$TAG"
   done
-  cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST"
+  IMAGE_DIGEST="$(skopeo inspect "containers-storage:$TAG_REGISTRY_LATEST" | jq -r .Digest)"
+  cosign sign --new-bundle-format=false --use-signing-config=false "$TAG_REGISTRY_LATEST@$IMAGE_DIGEST"
 done
