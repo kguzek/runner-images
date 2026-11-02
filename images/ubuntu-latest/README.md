@@ -10,6 +10,7 @@ keeping the image size low.
 - CA certificates
 - Git
 - Node.js
+- rustup
 - Docker Engine (`docker-ce`)
 - Docker Buildx plugin
 - Docker Compose plugin

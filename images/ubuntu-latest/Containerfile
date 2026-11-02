@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install --yes \
   gettext-base
 RUN apt-get install --yes nodejs
 # RUN apt-get install --yes npm
+RUN apt-get install --yes rustup
 
 # setup Docker apt repository: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 RUN install -m 0755 -d /etc/apt/keyrings && \
