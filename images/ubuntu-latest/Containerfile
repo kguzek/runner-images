@@ -32,10 +32,11 @@ RUN apt-get update && apt-get install --yes \
   tar \
   jq \
   git \
-  gettext-base
-RUN apt-get install --yes nodejs
+  gettext-base \
+  rustup
+RUN apt-get install --yes gcc
+RUN apt-get install --yes nodejs build-essential
 # RUN apt-get install --yes npm
-RUN apt-get install --yes rustup
 
 # setup Docker apt repository: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
 RUN install -m 0755 -d /etc/apt/keyrings && \

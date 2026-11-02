@@ -10,6 +10,7 @@ keeping the image size low.
 - CA certificates
 - Git
 - Node.js
+- build-essential
 - rustup
 - Docker Engine (`docker-ce`)
 - Docker Buildx plugin
@@ -25,4 +26,4 @@ keeping the image size low.
 
 ## Trivia
 
-The image layers are intentionally not fully optimized in order to keep individual layer sizes below 100 MB. This might mean more frequent cache misses, but since <https://git.guzek.uk> is hosted behind CloudFlare, this is a hard limit that needs to be maintained.
+The image layers are intentionally not fully optimized in order to keep individual layer sizes below 100 MB. This might mean more frequent cache misses, but since <https://git.guzek.uk> is hosted behind Cloudflare, this is a hard limit that needs to be maintained.
