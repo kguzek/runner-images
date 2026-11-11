@@ -34,6 +34,12 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
     continue
   fi
 
+  if should_push; then
+    TAG_BUILD="$TAG_GIT_VERSIONED"
+  else
+    TAG_BUILD="$TAG_GIT:check-${GITHUB_RUN_ID:-$$}"
+  fi
+
   "$CONTAINER_BACKEND" build "$REPOSITORY_PATH"        \
     --file "$CONTAINERFILE_PATH"                       \
     --build-arg "PROJECT_NAME=$PROJECT_NAME"           \
@@ -43,12 +49,14 @@ for CONTAINERFILE_PATH in ./images/*/Containerfile; do
     --build-arg "IMAGE_CREATED=$IMAGE_CREATED"         \
     --build-arg "IMAGE_VERSION=$IMAGE_VERSION"         \
     --build-arg "IMAGE_REVISION=$IMAGE_REVISION"       \
-    --tag "$TAG_GIT_LATEST"                            \
-    --tag "$TAG_GIT_VERSIONED"
+    --tag "$TAG_BUILD"
 
   if ! should_push; then
+    "$CONTAINER_BACKEND" image rm "$TAG_BUILD" > /dev/null
     continue
   fi
+
+  "$CONTAINER_BACKEND" tag "$TAG_GIT_VERSIONED" "$TAG_GIT_LATEST"
 
   for TAG in "$TAG_GIT_VERSIONED" "$TAG_GIT_LATEST"; do
     "$CONTAINER_BACKEND" push "$TAG"
