@@ -22,7 +22,6 @@ jobs:
 
       - name: Build images
         env:
-          REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
           PROJECT_NAME: ${{ vars.PROJECT_NAME }}
           GIT_HOSTNAME: ${{ vars.GIT_HOSTNAME }}
           GIT_OWNER: ${{ vars.GIT_OWNER }}

@@ -1,7 +1,6 @@
 # this SHA corresponds to tags: 26.04, resolute, latest
 FROM docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
 
-ARG REGISTRY_HOSTNAME
 ARG PROJECT_NAME
 ARG REPOSITORY_NAME
 ARG GIT_HOSTNAME
@@ -13,7 +12,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 LABEL org.opencontainers.image.created="${IMAGE_CREATED}"
 LABEL org.opencontainers.image.authors="Konrad Guzek"
-LABEL org.opencontainers.image.url="https://${REGISTRY_HOSTNAME}/harbor/projects/5/repositories/${REPOSITORY_NAME}"
+LABEL org.opencontainers.image.url="https://${GIT_HOSTNAME}/${GIT_OWNER}/-/packages/container/${PROJECT_NAME}%2F${REPOSITORY_NAME}"
 LABEL org.opencontainers.image.documentation="https://${GIT_HOSTNAME}/${GIT_OWNER}/${PROJECT_NAME}/src/branch/main/README.md"
 LABEL org.opencontainers.image.source="https://${GIT_HOSTNAME}/${GIT_OWNER}/${PROJECT_NAME}"
 LABEL org.opencontainers.image.version="${IMAGE_VERSION}"

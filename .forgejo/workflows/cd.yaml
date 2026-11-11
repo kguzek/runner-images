@@ -15,13 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Login to registry
-        uses: docker/login-action@v4
-        with:
-          registry: ${{ vars.REGISTRY_HOSTNAME }}
-          username: ${{ secrets.HARBOR_USERNAME }}
-          password: ${{ secrets.HARBOR_PASSWORD }}
-
       - name: Create Forgejo JWT
         id: jwt
         run: |
@@ -43,7 +36,6 @@ jobs:
 
       - name: Build & push images
         env:
-          REGISTRY_HOSTNAME: ${{ vars.REGISTRY_HOSTNAME }}
           PROJECT_NAME: ${{ vars.PROJECT_NAME }}
           GIT_HOSTNAME: ${{ vars.GIT_HOSTNAME }}
           GIT_OWNER: ${{ vars.GIT_OWNER }}
