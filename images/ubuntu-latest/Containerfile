@@ -1,5 +1,5 @@
 # this SHA corresponds to tags: 26.04, resolute, latest
-FROM docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
+FROM docker.io/ubuntu@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b AS base
 
 ARG PROJECT_NAME
 ARG REPOSITORY_NAME
@@ -58,3 +58,27 @@ RUN apt-get install --yes \
   docker-buildx-plugin \
   docker-compose-plugin \
   skopeo
+
+FROM base AS android-command-line-tools
+
+ARG ANDROID_CMDLINE_TOOLS_BUILD=15859902
+ARG ANDROID_CMDLINE_TOOLS_SHA256=4e4c464f145a7512b57d088ac6c278c03c9eea610886b35a5e0804e74eedf583
+
+RUN curl --fail --silent --show-error --location \
+    "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMDLINE_TOOLS_BUILD}_latest.zip" \
+    --output /tmp/android-command-line-tools.zip && \
+  echo "${ANDROID_CMDLINE_TOOLS_SHA256}  /tmp/android-command-line-tools.zip" | sha256sum --check && \
+  unzip -q /tmp/android-command-line-tools.zip -d /tmp/android && \
+  mv /tmp/android/cmdline-tools/lib/external/lint-psi /tmp/lint-psi && \
+  rm /tmp/android-command-line-tools.zip
+
+FROM base
+
+ENV ANDROID_HOME=/usr/local/lib/android/sdk
+ENV ANDROID_SDK_ROOT=${ANDROID_HOME}
+ENV CARGO_HOME=/usr/local/cargo
+ENV PATH=${ANDROID_HOME}/cmdline-tools/latest/bin:${CARGO_HOME}/bin:${PATH}
+
+# keep layers below 100 MB
+COPY --from=android-command-line-tools /tmp/android/cmdline-tools/ ${ANDROID_HOME}/cmdline-tools/latest/
+COPY --from=android-command-line-tools /tmp/lint-psi/ ${ANDROID_HOME}/cmdline-tools/latest/lib/external/lint-psi/

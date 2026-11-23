@@ -23,6 +23,7 @@ keeping the image size low.
 - jq
 - containerd
 - gettext-base (`envsubst`)
+- Android SDK Command-line Tools (`sdkmanager`, `avdmanager`)
 
 ## Trivia
 
